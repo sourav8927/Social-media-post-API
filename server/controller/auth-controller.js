@@ -16,8 +16,9 @@ const register=async(req,res)=>{
             email,
             phone,
             password,
+            posts:[],
         });
-        res.status(201).json({msg:"Registration successfully",token: await userCreated.generateToken(),userId: userCreated._id.toString()});
+        res.status(201).json({msg:"Registration successfully",userCreated,token: await userCreated.generateToken(),userId: userCreated._id.toString()});
     } catch (error) {
         res.status(500).json({msg:"Internal server error"});
     }

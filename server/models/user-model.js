@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const bcrypt=require("bcryptjs");
 const jwt= require("jsonwebtoken");
+const { required } = require("../validators/auth-validator");
 
 const userSchema= new mongoose.Schema({
     username:{
@@ -19,7 +20,7 @@ const userSchema= new mongoose.Schema({
         type:String,
         require:true, 
     },
-
+    posts:[{type:mongoose.Types.ObjectId,ref:"SocialPost",required:true}]
 });
 
 //created pre for password hashing in bcrypt
