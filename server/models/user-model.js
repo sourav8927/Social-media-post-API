@@ -6,19 +6,19 @@ const { required } = require("../validators/auth-validator");
 const userSchema= new mongoose.Schema({
     username:{
         type:String,
-        require:true,
+        required:true,
     },
     email:{
         type:String,
-        require:true,
+        required:true,
     },
     phone:{
         type:String,
-        require:true,
+        required:true,
     },
     password:{
         type:String,
-        require:true, 
+        required:true, 
     },
     posts:[{type:mongoose.Types.ObjectId,ref:"SocialPost",required:true}]
 });

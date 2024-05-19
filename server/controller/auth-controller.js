@@ -44,5 +44,15 @@ const login= async(req,res)=>{
     }
 }
 
-
-module.exports={register,login};
+//For sending user data 
+const user=async(req,res)=>{
+    try {
+      const userData= req.user;
+      console.log("data from auth controller user",userData);
+      res.status(200).json({userData});
+    } catch (error) {
+      console.log(`Error from the user route ${error}`);
+    }
+   
+  }
+module.exports={register,login,user};

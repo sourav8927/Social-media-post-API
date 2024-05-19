@@ -98,19 +98,63 @@ const getById= async(req,res,next)=>{
     return res.status(200).json({post});
 }
 
-const postLikes=async(req,res,next)=>{
-    const postId = req.params.postId;
-    let index;
+//For adding Like in posts
+const postLikes = async (req, res,next) => {
     try {
-       index =await posts.findIndex(post => post.id === postId);
-    if (index === -1) {
-        return res.status(404).json({ message: 'Post not found' });
-    }
-    posts[index].likes = (posts[index].likes || 0) + 1;
-    res.json(posts[index]);
-    } catch (error) {
-        console.log(error)
-    }
     
-}
-module.exports={getAllPosts,addPost,updatePost,deletePost,getById,postLikes};
+    const id = req.params.id;
+    console.log(`Received request to like post with ID: ${id}`);
+      // Find the post by ID
+      const post = await SocialPost.findById(id);
+      if (!post) {
+        console.log(`Post with ID ${id} not found`);
+        return res.status(404).json({ msg: "Post not found" });
+      }
+  
+      // Increment the likes count
+      post.like = (post.like || 0) + 1;
+  
+      // Save the updated post
+      await post.save();
+  
+      console.log(`Post with ID ${id} liked successfully. Total likes: ${post.like}`);
+      res.status(200).json({ msg: "Post liked successfully", like: post.like });
+    } catch (error) {
+      console.error("Error liking post:", error);
+      res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
+  //For adding Comments in posts
+  const addComments = async (req, res, next) => {
+    try {
+      const postId = req.params.id;
+      const { user, content } = req.body;
+      
+      const post = await SocialPost.findById(postId);
+      if (!post) {
+        return res.status(404).json({ msg: 'Post not found' });
+      }
+  
+      const existingUser = await User.findById(user);
+      if (!existingUser) {
+        return res.status(400).json({ msg: 'User not found' });
+      }
+  
+      const comment = {
+        user,
+        content,
+        timestamp: new Date()
+      };
+  
+      post.comments.push(comment);
+      await post.save();
+      
+      console.log(post.comments);
+      res.status(200).json({ msg: 'Comment added successfully', comments: post.comments });
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      res.status(500).json({ msg: 'Internal server error' });
+    }
+  };
+module.exports={getAllPosts,addPost,updatePost,deletePost,getById,postLikes,addComments};
